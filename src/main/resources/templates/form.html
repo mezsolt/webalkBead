@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+<script>
+function myFunction() {
+	$.post( "http://localhost:8182/movie", 
+	{
+	movieName : "movie5",
+	availableCinemas : ["Miskolc,Ozd"],
+	movieGenre : ["Action","Comedy"],
+	datesAndSeats : [{cinemaName:"Miskolc",showDate:"2017-04-25T15:00"},{cinemaName:"Ozd",showDate:"2017-04-28T13:00"}]
+}
+	 );
+}
+</script>
+</head>
+<body>
+<form onSubmit="myFunction()">
+Name:<br/>
+<input type="text" /> <br/>                 
+Password<br/>
+<input type="text" />    <br/>       
+<button type="submit">Submit</button><br/>
+</form>
+</body>
+</html>
