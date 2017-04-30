@@ -3,16 +3,21 @@
 <head>
 <meta charset="UTF-8"/>
 <title>Insert title here</title>
-<script>
-function myFunction() {
-	$.post( "http://localhost:8182/movie", 
-	{
-	movieName : "movie5",
-	availableCinemas : ["Miskolc,Ozd"],
-	movieGenre : ["Action","Comedy"],
-	datesAndSeats : [{cinemaName:"Miskolc",showDate:"2017-04-25T15:00"},{cinemaName:"Ozd",showDate:"2017-04-28T13:00"}]
-}
-	 );
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript">
+function myFunction(){
+	var UserEntity = {firstName:'ajaxUserF1',lastName:'ajaxUserL1'}
+	$.ajax({
+		type:"POST",
+		contentType:"application/json;charset=utf-8",
+		data: JSON.stringify(UserEntity),
+		url:"/user",
+		success:function(data){
+			alert(data);
+		}, error:function(data) {
+			alert("fail" + data);
+		}
+	});
 }
 </script>
 </head>
@@ -26,3 +31,29 @@ Password<br/>
 </form>
 </body>
 </html>
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+	<!--
+		$.post( "http://localhost:8182/movie", 
+	{
+		{"movieName" : "movie5",
+	"availableCinemas" : ["Miskolc,Ozd"],
+	"movieGenre" : ["Action","Comedy"],
+	"datesAndSeats" : [{"cinemaName":"Miskolc","showDate":"2017-04-25T15:00"},{"cinemaName":"Ozd","showDate":"2017-04-28T13:00"}]
+	}
+
+	 );
+		
+		var UserEntity = {firstName:'ajaxUserF1',lastName:'ajaxUserL1'}
+	$.ajax({
+		type:"POST",
+		contentType:"application/json;charset=utf-8",
+		data: JSON.stringify(UserEntity),
+		url:"/user",
+		success:function(data){
+			alert(data);
+		}, error:function(data) {
+			alert("fail" + data);
+		}
+	});
+		
+	-->

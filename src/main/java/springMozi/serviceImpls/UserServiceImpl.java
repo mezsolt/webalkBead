@@ -1,5 +1,7 @@
 package springMozi.serviceImpls;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public Iterable<UserEntity> listAllUser() {
-		// TODO Auto-generated method stub
 		return userRepository.findAll();
 	}
 
@@ -36,12 +37,29 @@ public class UserServiceImpl implements UserService {
 	public UserEntity findUser(long id) {
 		return userRepository.findOne(id);
 	}
-		
+			
 	public void updateUser(long id,UserEntity updatedUser) {	
+		userRepository.findOne(id).setUserName(updatedUser.getUserName());
+		userRepository.findOne(id).setPassword(updatedUser.getPassword());
 		userRepository.findOne(id).setFirstName(updatedUser.getFirstName());
 		userRepository.findOne(id).setLastName(updatedUser.getLastName());
+		userRepository.findOne(id).setEmailAddress(updatedUser.getEmailAddress());
+		userRepository.findOne(id).setPhoneNumber(updatedUser.getPhoneNumber());
 		
 		userRepository.save(userRepository.findOne(id));	
+	}
+
+	@Override
+	public UserEntity showOne(long id) {
+		return userRepository.findOne(id);
+	}
+	
+	public List<UserEntity> findByUserName(String userName) {
+		return userRepository.findByUserName(userName);
+	}
+	
+	public List<UserEntity> findByEmailAddress(String emailAddress) {
+		return userRepository.findByEmailAddress(emailAddress);
 	}
 	
 }
