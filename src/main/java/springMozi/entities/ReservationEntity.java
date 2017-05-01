@@ -3,10 +3,14 @@ package springMozi.entities;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class ReservationEntity {
@@ -16,13 +20,17 @@ public class ReservationEntity {
 	private long id;
 	
 	private long userId;
+	private long showId;
 	
 	private String movieName;
 	private String cinemaName;
 	private int showRoom;
 	private String showDimension;
-	private Date showDate;
 	
+	@Column(length=10000)
+	@Lob
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
+	private Date showDate;
 	private int seats[][];	
 	
 	public long getId() {
@@ -88,7 +96,13 @@ public class ReservationEntity {
 	public void setShowRoom(int showRoom) {
 		this.showRoom = showRoom;
 	}
-	
-	
 
+	public long getShowId() {
+		return showId;
+	}
+
+	public void setShowId(long showId) {
+		this.showId = showId;
+	}
+	
 }

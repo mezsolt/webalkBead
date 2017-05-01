@@ -52,11 +52,6 @@ public class CinemaDateAndSeats implements Serializable{
 	private MovieEntity movieEntity;
 		
 	public CinemaDateAndSeats() {
- 		for(int i=0;i<5;i++){
- 			for(int j=0;j<10;j++){
- 				this.seats[i][j] = 1;
- 			}
- 		}	
 	}
  	
 	public long getId() {
@@ -92,7 +87,7 @@ public class CinemaDateAndSeats implements Serializable{
 		return seats;
 	}
 	
-	@JsonIgnore
+	@JsonIgnore	
 	public void setSeats(int[][] seats,int ujErtek) {
 		for(int i=0;i<seats.length;i++){
 			this.seats[seats[i][0]][seats[i][1]] = ujErtek; 		

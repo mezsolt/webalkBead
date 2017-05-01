@@ -13,22 +13,23 @@ import springMozi.entities.MovieEntity;
 public interface MovieService {
 
 	Iterable<MovieEntity> listMovies();
-	void newMovie(MovieEntity newMovie);
+	void saveMovie(MovieEntity newMovie);
 	void deleteMovie(long id);
 	void updateMovie(long id,MovieEntity updateEntity);
 	void updateShow(long movieId,int showId,CinemaDateAndSeats updateShow);
 	MovieEntity showOne(long id);
-	int[][] showSeats(long movieId,int showId);
 	void newShow(long id,CinemaDateAndSeats newShow);
-	void setSeats(long movieId,int showId,int[][] seats,int newValue);
 	List<MovieEntity> getMovieByGenres(ArrayList<String> genre);
+	CinemaDateAndSeats getCinemaDateAndSeatsById(long showId);
+	void setSeats(long showId, int[][] seats, int newValue);
+	int[][] showSeats(long showId);
+	//int[][] getShowSeats(long movieId,int showId);
 	
 	//dao
 	List<MovieEntity> findMovieAfterDate(Date date);
 	
 	//crudrepository
 	List<MovieEntity> findByMovieName(String movieName);
-	
 	
 	
 	

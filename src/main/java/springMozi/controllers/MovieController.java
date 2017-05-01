@@ -47,11 +47,11 @@ public class MovieController {
 	
 	@PostMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void newMovie(@RequestBody MovieEntity newMovie) {
-		movieService.newMovie(newMovie);
+		movieService.saveMovie(newMovie);
 	}
 	
 	@PutMapping(path="/newshow/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
-	void updateMovie(@PathVariable long id, @RequestBody CinemaDateAndSeats newShow) {
+	void newShow(@PathVariable long id, @RequestBody CinemaDateAndSeats newShow) {
 		movieService.newShow(id, newShow);
 	}
 	
@@ -76,10 +76,15 @@ public class MovieController {
 	Iterable<MovieEntity> findByMovieName(@RequestParam String movieName) {
 		return movieService.findByMovieName(movieName);
 	}
-	
+		
 	@GetMapping(path="/rep/genre",produces=MediaType.APPLICATION_JSON_VALUE)
 	Iterable<MovieEntity> findByMovieGenreIn(@RequestParam ArrayList<String> movieGenre) {
 		return movieService.getMovieByGenres(movieGenre);
+	}
+	
+	@GetMapping(path="/seats",produces=MediaType.APPLICATION_JSON_VALUE)
+	int[][] getSeats(@RequestParam long showId) {		
+		return movieService.getCinemaDateAndSeatsById(showId).getSeats();
 	}
 	
 	/*@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)

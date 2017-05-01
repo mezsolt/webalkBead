@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService{
 	}
 
 	@Override
-	public void newMovie(MovieEntity newMovie) {
+	public void saveMovie(MovieEntity newMovie) {
 		movieRepository.save(newMovie);
 	}
 
@@ -47,6 +47,11 @@ public class MovieServiceImpl implements MovieService{
 
 	@Override
 	public void newShow(long id,CinemaDateAndSeats newShow) {
+		for(int i=0;i<5;i++){
+ 			for(int j=0;j<10;j++){
+ 				newShow.getSeats()[i][j] = 1;
+ 			}
+ 		}	
 		movieRepository.findOne(id).getDateAndSeats().add(newShow);
 		movieRepository.save(movieRepository.findOne(id));	
 	}
@@ -68,8 +73,15 @@ public class MovieServiceImpl implements MovieService{
 	}
 
 	@Override
-	public int[][] showSeats(long movieId, int showId) {
-		return movieRepository.findOne(movieId).getDateAndSeats().get(showId).getSeats();
+	public int[][] showSeats(long showId) {
+		/*int[][] returnTomb = null;
+		for(int i=0;i<movieRepository.findOne(movieId).getDateAndSeats().size();i++) {
+			if(movieRepository.findOne(movieId).getDateAndSeats().get(i).getId()==showId){
+				returnTomb = movieRepository.findOne(movieId).getDateAndSeats().get(i).getSeats();
+			}
+		}
+		return returnTomb;*/
+		return getCinemaDateAndSeatsById(showId).getSeats();
 	}
 	
 	@Override
@@ -83,11 +95,8 @@ public class MovieServiceImpl implements MovieService{
 	}
 
 	@Override
-	public void setSeats(long movieId,int showId,int[][] seats, int newValue) {
-		movieRepository.findOne(movieId).getDateAndSeats().get(showId).setSeats(seats, newValue);
-		
-		movieRepository.save(movieRepository.findOne(movieId));
-		
+	public void setSeats(long showId,int[][] seats, int newValue) {
+		getCinemaDateAndSeatsById(showId).setSeats(seats,newValue);
 	}
 		
 	public List<MovieEntity> findMovieAfterDate(Date date) {
@@ -113,5 +122,29 @@ public class MovieServiceImpl implements MovieService{
 
 		return moviesByGenre;
 	}
+
+	@Override
+	public CinemaDateAndSeats getCinemaDateAndSeatsById(long showId) {
+		CinemaDateAndSeats dateAndSeats = null;
+		/*for(int i=0;i<movieRepository.findOne(movieId).getDateAndSeats().size();i++) {
+			if(movieRepository.findOne(movieId).getDateAndSeats().get(i).getId()==showId){
+				dateAndSeats = movieRepository.findOne(movieId).getDateAndSeats().get(i);
+			}
+		}*/
+		for(MovieEntity me : movieRepository.findAll()) {
+			for(int i=0;i<me.getDateAndSeats().size();i++) {
+				if(me.getDateAndSeats().get(i).getId()==showId){
+					dateAndSeats = me.getDateAndSeats().get(i);
+				}
+			}
+		}
+		return dateAndSeats;
+	}
+
+
+	/*@Override
+	public int[][] getShowSeats(long movieId,int showId) {
+		return movieRepository.findOne(movieId).getDateAndSeats().get(showId).getSeats();
+	}*/
 
 }
