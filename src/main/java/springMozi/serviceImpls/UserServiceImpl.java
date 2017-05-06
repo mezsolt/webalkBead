@@ -1,11 +1,13 @@
 package springMozi.serviceImpls;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import springMozi.entities.UserEntity;
+import springMozi.exceptions.BadRoleException;
 import springMozi.repositories.UserRepository;
 import springMozi.services.UserService;
 
@@ -70,6 +72,39 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserEntity> findByPhoneNumber(String phoneNumber) {
 		return userRepository.findByPhoneNumber(phoneNumber);
+	}
+
+	@Override
+	public boolean checkForUsernameAndEmail(String username, String email) {
+		boolean alreadyExist = false;
+		for(UserEntity e : userRepository.findAll()) {
+			if(e.getUsername() == username || e.getEmailAddress() == email) {
+				alreadyExist = true;
+			}
+		}
+		return alreadyExist;
+	}
+
+	@Override
+	public boolean checkForId(long id) {
+		boolean exists = false;
+		for(UserEntity e : userRepository.findAll()) {
+			if(e.getId() == id) {
+				exists = true;
+			}
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean roleCheck(ArrayList<String> roles) {
+		boolean roleChecker = false;
+		for(String s : roles) {
+			if(!s.equals("USER") && !s.equals("ADMIN")) {
+				roleChecker = true;
+			}
+		}
+		return roleChecker;
 	}
 	
 }

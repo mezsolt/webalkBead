@@ -10,10 +10,12 @@ import springMozi.entities.ReservationEntity;
 public interface ReservationService {
 
 	Iterable<ReservationEntity> listAllReservations();
-	void newReservation(ReservationEntity newReservation);
+	void newReservation(ReservationEntity newReservation,int price);
 	void deleteReservation(long id);
 	ReservationEntity findReservation(long id);
-	void updateReservation(long id,ReservationEntity updatedReservation);
+	void updateReservation(long id,ReservationEntity updatedReservation,int price);
+	void deleteReservationByUserId(long userId);
+	void deleteReservationByShowId(long showId);
 	
 	//crudrepository
 	List<ReservationEntity> findByUserId(long userId);

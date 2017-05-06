@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import springMozi.dao.MovieDAO;
 import springMozi.entities.CinemaDateAndSeats;
 import springMozi.entities.MovieEntity;
+import springMozi.entities.ReservationEntity;
+import springMozi.entities.UserEntity;
 import springMozi.repositories.MovieRepository;
 import springMozi.services.MovieService;
+import springMozi.services.ReservationService;
 
 @Service
 public class MovieServiceImpl implements MovieService{
@@ -74,13 +77,13 @@ public class MovieServiceImpl implements MovieService{
 	}
 	
 	@Override
-	public void updateShow(long movieId, int showId, CinemaDateAndSeats updateShow) {
-		movieRepository.findOne(movieId).getDateAndSeats().get(showId).setCinemaName(updateShow.getCinemaName());
-		movieRepository.findOne(movieId).getDateAndSeats().get(showId).setShowDate(updateShow.getShowDate());
-		movieRepository.findOne(movieId).getDateAndSeats().get(showId).setShowRoom(updateShow.getShowRoom());
-		movieRepository.findOne(movieId).getDateAndSeats().get(showId).setShowDimension(updateShow.getShowDimension());
+	public void updateShow(long showId, CinemaDateAndSeats updateShow) {		
+		getCinemaDateAndSeatsById(showId).setCinemaName(updateShow.getCinemaName());
+		getCinemaDateAndSeatsById(showId).setShowDate(updateShow.getShowDate());
+		getCinemaDateAndSeatsById(showId).setShowRoom(updateShow.getShowRoom());
+		getCinemaDateAndSeatsById(showId).setShowDimension(updateShow.getShowDimension());
 		
-		movieRepository.save(movieRepository.findOne(movieId));
+		movieRepository.save(movieRepository.findOne(getCinemaDateAndSeatsById(showId).getMovieEntity().getId()));
 	}
 
 	@Override
@@ -146,5 +149,41 @@ public class MovieServiceImpl implements MovieService{
 		
 	}
 
+	@Override
+	public boolean checkForMovieName(String movieName) {
+		boolean alreadyExist = false;
+		for(MovieEntity e : movieRepository.findAll()) {
+			if(e.getMovieName() == movieName) {
+				alreadyExist = true;
+			}
+		}
+		return alreadyExist;
+	}
+
+	@Override
+	public boolean checkForShowId(long id) {
+		boolean exists = false;
+		for(MovieEntity me : movieRepository.findAll()) {
+			for(int i=0;i<me.getDateAndSeats().size();i++) {
+				if(me.getDateAndSeats().get(i).getId()==id){
+					exists = true;
+				}
+			}
+		}
+		return exists;
+	}
+
+	@Override
+	public void deleteReservationsByMovieId(long movieId, ReservationService reservationService) {
+	
+		for(CinemaDateAndSeats a : showOne(movieId).getDateAndSeats()) {
+			for(ReservationEntity r : reservationService.listAllReservations()) {
+				if(a.getId()==r.getShowId()) {
+					reservationService.deleteReservationByShowId(a.getId());
+				}
+			}
+		}
+	}
+		
 
 }

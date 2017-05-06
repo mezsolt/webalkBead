@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ReservationEntity {
@@ -39,6 +40,10 @@ public class ReservationEntity {
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
 	@NotNull
 	private Date showDate;
+	
+	@Column(length=10000)
+	@NotNull
+	private int price;
 	
 	@NotNull
 	private int seats[][];	
@@ -114,5 +119,15 @@ public class ReservationEntity {
 	public void setShowId(long showId) {
 		this.showId = showId;
 	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	
+	
 	
 }

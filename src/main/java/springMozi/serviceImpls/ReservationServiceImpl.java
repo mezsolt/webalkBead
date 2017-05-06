@@ -26,7 +26,8 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 
 	@Override
-	public void newReservation(ReservationEntity newReservation) {
+	public void newReservation(ReservationEntity newReservation,int price) {
+		newReservation.setPrice(price * newReservation.getSeats().length);
 		reservationRepository.save(newReservation);		
 	}
 
@@ -41,13 +42,14 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 	
 	@Override
-	public void updateReservation(long id, ReservationEntity updatedReservation) {
+	public void updateReservation(long id, ReservationEntity updatedReservation,int price) {
 		this.reservationRepository.findOne(id).setMovieName(updatedReservation.getMovieName());
 		this.reservationRepository.findOne(id).setCinemaName(updatedReservation.getCinemaName());
 		this.reservationRepository.findOne(id).setShowRoom(updatedReservation.getShowRoom());
 		this.reservationRepository.findOne(id).setShowDimension(updatedReservation.getShowDimension());
 		this.reservationRepository.findOne(id).setShowDate(updatedReservation.getShowDate());
 		this.reservationRepository.findOne(id).setSeats(updatedReservation.getSeats());
+		this.reservationRepository.findOne(id).setPrice(price * updatedReservation.getSeats().length);
 		
 		this.reservationRepository.save(this.reservationRepository.findOne(id));
 		
@@ -70,4 +72,22 @@ public class ReservationServiceImpl implements ReservationService{
 		return reservationRepository.findByShowId(showId);
 	}
 
+	@Override
+	public void deleteReservationByUserId(long userId) {
+		for(ReservationEntity e : reservationRepository.findAll()) {
+			if(e.getUserId() == userId) {
+				reservationRepository.delete(e.getId());
+			}
+		}	
+	}
+
+	@Override
+	public void deleteReservationByShowId(long showId) {
+		for(ReservationEntity e : reservationRepository.findAll()) {
+			if(e.getShowId() == showId) {
+				reservationRepository.delete(e.getId());
+			}
+		}	
+	}
+	
 }

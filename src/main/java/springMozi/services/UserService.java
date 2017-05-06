@@ -1,5 +1,6 @@
 package springMozi.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public interface UserService {
 	void deleteUser(long id);
 	UserEntity findUser(long id);
 	void updateUser(long id,UserEntity updatedUser);
+	boolean checkForUsernameAndEmail(String username,String email);
+	boolean checkForId(long id);
+	boolean roleCheck(ArrayList<String> roles);
 	
 	//crudrepository
 	UserEntity findOneByUsername(String username);

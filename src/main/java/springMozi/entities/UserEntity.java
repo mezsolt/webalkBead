@@ -1,5 +1,7 @@
 package springMozi.entities;
 
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +20,6 @@ public class UserEntity {
 	@Column(unique=true)
 	private String username;
 	@NotNull
-	@Column(unique=true)
 	private String password;
 	
 	@NotNull
@@ -29,8 +30,9 @@ public class UserEntity {
 	@Column(unique=true)
 	private String emailAddress;
 	@NotNull
-	@Column(unique=true)
 	private String phoneNumber;
+	@NotNull
+	private ArrayList<String> roles;
 	
 	public long getId() {
 		return id;
@@ -74,7 +76,11 @@ public class UserEntity {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	
+	public ArrayList<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(ArrayList<String> roles) {
+		this.roles = roles;
+	}
 	
 }

@@ -20,10 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import springMozi.dao.MovieDAO;
+import springMozi.dao.ReservationDAO;
 import springMozi.entities.CinemaDateAndSeats;
 import springMozi.entities.MovieEntity;
 import springMozi.entities.ReservationEntity;
 import springMozi.entities.UserEntity;
+import springMozi.exceptions.MovieNameAlreadyExistsException;
+import springMozi.exceptions.UsernameOrEmailAlreadyExistException;
 import springMozi.serviceImpls.MovieServiceImpl;
 import springMozi.serviceImpls.ReservationServiceImpl;
 import springMozi.serviceImpls.UserServiceImpl;
@@ -37,13 +40,15 @@ public class MovieController {
 	private MovieService movieService;
 	private ReservationService reservationService;
 	
-	MovieDAO movieDao;
+	private MovieDAO movieDao;
+	private ReservationDAO reservationDAO;
 	
 	@Autowired
-	public MovieController(MovieServiceImpl movieServiceImpl,ReservationServiceImpl reservationServiceImpl,MovieDAO movieDao) {
+	public MovieController(MovieServiceImpl movieServiceImpl,ReservationServiceImpl reservationServiceImpl,MovieDAO movieDao,ReservationDAO reservationDAO) {
 		this.movieService = movieServiceImpl;
 		this.reservationService = reservationServiceImpl;	
 		this.movieDao = movieDao;
+		this.reservationDAO = reservationDAO;
 	}
 		
 	@GetMapping(path="",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -53,16 +58,23 @@ public class MovieController {
 	
 	@PostMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void newMovie(@RequestBody MovieEntity newMovie) {
+		if(movieService.checkForMovieName(newMovie.getMovieName())) {
+			throw new MovieNameAlreadyExistsException();
+		}
 		movieService.saveMovie(newMovie);
 	}
 	
 	@DeleteMapping(path="/{id}")
 	void deleteMovie(@PathVariable long id) {
+		movieService.deleteReservationsByMovieId(id, reservationService);
 		movieService.deleteMovie(id);
 	}
 	
 	@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void updateMovie(@PathVariable long id, @RequestBody MovieEntity updateMovie) {
+		if(movieService.checkForMovieName(updateMovie.getMovieName())) {
+			throw new MovieNameAlreadyExistsException();
+		}
 		movieService.updateMovie(id, updateMovie);
 	}
 	
@@ -91,19 +103,21 @@ public class MovieController {
 		return movieService.getMovieByCinemas(movieCinemas);
 	}
 	
-	//show todo updateshow
+	//show
 	@PutMapping(path="/newshow/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void newShow(@PathVariable long id, @RequestBody CinemaDateAndSeats newShow) {
 		movieService.newShow(id, newShow);
 	}	
 	
+	@PostMapping(path="/updateshow/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
+	void updateShow(@PathVariable long showId, @RequestBody CinemaDateAndSeats updateShow) {
+		reservationService.deleteReservationByShowId(updateShow.getId());
+		movieService.updateShow(showId, updateShow);
+	}
+	
 	@DeleteMapping(path="/show/{id}")
 	void deleteShow(@PathVariable long id) {
-		for(ReservationEntity e : reservationService.listAllReservations()) {
-			if(e.getShowId()==id) {
-				reservationService.deleteReservation(e.getId());
-			}
-		}
+		reservationService.deleteReservationByShowId(id);
 		movieService.deleteShow(id);
 	}
 	

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import springMozi.entities.CinemaDateAndSeats;
 import springMozi.entities.MovieEntity;
+import springMozi.entities.ReservationEntity;
 
 @Service
 public interface MovieService {
@@ -19,12 +20,15 @@ public interface MovieService {
 	MovieEntity showOne(long id);
 	List<MovieEntity> getMovieByGenres(ArrayList<String> genre);
 	List<MovieEntity> getMovieByCinemas(ArrayList<String> cinema);
+	boolean checkForMovieName(String movieName);
+	boolean checkForShowId(long id);
+	void deleteReservationsByMovieId(long movieId, ReservationService reservationService);
 	
 	void setSeats(long showId, int[][] seats, int newValue);
 	int[][] showSeats(long showId);
 	
 	void deleteShow(long showId);
-	void updateShow(long movieId,int showId,CinemaDateAndSeats updateShow);
+	void updateShow(long showId,CinemaDateAndSeats updateShow);
 	void newShow(long id,CinemaDateAndSeats newShow);
 	CinemaDateAndSeats getCinemaDateAndSeatsById(long showId);
 	

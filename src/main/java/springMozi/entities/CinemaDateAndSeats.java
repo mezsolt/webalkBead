@@ -51,6 +51,10 @@ public class CinemaDateAndSeats implements Serializable{
 	@JsonIgnore
 	private int[][] seats = new int[5][10];
 	
+	@Column(length=10000)
+	@NotNull
+	private int ticketPrice;
+	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "movie_Entity_id")
@@ -114,7 +118,17 @@ public class CinemaDateAndSeats implements Serializable{
 	public void setShowDimension(String showDimension) {
 		this.showDimension = showDimension;
 	}
+	
+	
 		
+	public int getTicketPrice() {
+		return ticketPrice;
+	}
+
+	public void setTicketPrice(int ticketPrice) {
+		this.ticketPrice = ticketPrice;
+	}
+
 	public void setSeatsToOne() {
 		for(int i=0;i<5;i++){
  			for(int j=0;j<10;j++){
@@ -125,5 +139,15 @@ public class CinemaDateAndSeats implements Serializable{
 	
 	public int getSeatAt(int x,int y) {
 		return getSeats()[x][y];
+	}
+	
+	public ArrayList<String> checkIfSeatIsTaken(int[][] reservationSeats) {
+		ArrayList<String> takenSeats = new ArrayList<String>();
+		for(int i=0;i<reservationSeats.length;i++){
+			if(this.seats[reservationSeats[i][0]][reservationSeats[i][1]] == 0) {
+				takenSeats.add("Seat " + reservationSeats[i][0] + " " + reservationSeats[i][1] + " is taken.");
+			}
+		}
+		return takenSeats;
 	}
 }

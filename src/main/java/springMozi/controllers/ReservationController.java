@@ -14,10 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import springMozi.entities.MovieEntity;
 import springMozi.entities.ReservationEntity;
+import springMozi.exceptions.BadUserNameException;
+import springMozi.exceptions.ShowIdNotExistsException;
+import springMozi.exceptions.UserIdNotExistsException;
+import springMozi.exceptions.seatsTakenException;
 import springMozi.serviceImpls.MovieServiceImpl;
 import springMozi.serviceImpls.ReservationServiceImpl;
+import springMozi.serviceImpls.UserServiceImpl;
 import springMozi.services.MovieService;
 import springMozi.services.ReservationService;
+import springMozi.services.UserService;
 
 @RestController
 @RequestMapping("/reservation")
@@ -25,12 +31,14 @@ public class ReservationController {
 
 	private ReservationService reservationService;
 	private MovieService movieService;
+	private UserService userService;
 
 	@Autowired
-	public ReservationController(ReservationServiceImpl reservationServiceImpl,MovieServiceImpl movieServiceImpl) {
+	public ReservationController(ReservationServiceImpl reservationServiceImpl,MovieServiceImpl movieServiceImpl,UserServiceImpl userServiceImpl) {
 		super();
 		this.reservationService = reservationServiceImpl;
 		this.movieService = movieServiceImpl;
+		this.userService = userServiceImpl;
 	}
 	
 	@GetMapping(path="",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -39,10 +47,20 @@ public class ReservationController {
 	}
 	
 	@PostMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
-	void newReservation(@RequestBody ReservationEntity newReservation,@RequestParam long showId) {
-		reservationService.newReservation(newReservation);
-		movieService.getCinemaDateAndSeatsById(showId).setSeats(newReservation.getSeats(), 0);
-		movieService.saveMovie(movieService.showOne(movieService.getCinemaDateAndSeatsById(showId).getMovieEntity().getId()));
+	void newReservation(@RequestBody ReservationEntity newReservation) {
+		if(movieService.getCinemaDateAndSeatsById(newReservation.getShowId()).checkIfSeatIsTaken(newReservation.getSeats()).size()>0) {
+			throw new seatsTakenException(movieService.getCinemaDateAndSeatsById(newReservation.getShowId()).checkIfSeatIsTaken(newReservation.getSeats()).toString());
+		} 
+		if(!userService.checkForId(newReservation.getUserId())) {
+			throw new UserIdNotExistsException();
+		}
+		if(!movieService.checkForShowId(newReservation.getShowId())) {
+			throw new ShowIdNotExistsException();
+		}
+		reservationService.newReservation(newReservation,movieService.getCinemaDateAndSeatsById(newReservation.getShowId()).getTicketPrice());
+		movieService.getCinemaDateAndSeatsById(newReservation.getShowId()).setSeats(newReservation.getSeats(), 0);
+		movieService.saveMovie(movieService.showOne(movieService.getCinemaDateAndSeatsById(newReservation.getShowId()).getMovieEntity().getId()));
+		
 	}
 	
 	@GetMapping(path="/seats/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -53,12 +71,23 @@ public class ReservationController {
 	
 	@DeleteMapping(path="/{id}")
 	void deleteReservation(@PathVariable long id) {
+		movieService.getCinemaDateAndSeatsById(reservationService.findReservation(id).getShowId()).setSeats(reservationService.findReservation(id).getSeats(), 1);
+		movieService.saveMovie(movieService.showOne(movieService.getCinemaDateAndSeatsById(reservationService.findReservation(id).getShowId()).getMovieEntity().getId()));
 		reservationService.deleteReservation(id);
 	}
 	
 	@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void updateReservation(@PathVariable long id, @RequestBody ReservationEntity updateReservation) {
-		reservationService.updateReservation(id, updateReservation);
+		if(movieService.getCinemaDateAndSeatsById(updateReservation.getShowId()).checkIfSeatIsTaken(updateReservation.getSeats()).size()>0) {
+			throw new seatsTakenException(movieService.getCinemaDateAndSeatsById(updateReservation.getShowId()).checkIfSeatIsTaken(updateReservation.getSeats()).toString());
+		} 
+		if(!userService.checkForId(updateReservation.getUserId())) {
+			throw new UserIdNotExistsException();
+		}
+		if(!movieService.checkForShowId(updateReservation.getShowId())) {
+			throw new ShowIdNotExistsException();
+		}
+		reservationService.updateReservation(id, updateReservation,movieService.getCinemaDateAndSeatsById(updateReservation.getShowId()).getTicketPrice());
 	}
 	
 	
