@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,8 @@ import springMozi.services.ReservationService;
 @RequestMapping("/reservation")
 public class ReservationController {
 
-	ReservationService reservationService;
-	MovieService movieService;
+	private ReservationService reservationService;
+	private MovieService movieService;
 
 	@Autowired
 	public ReservationController(ReservationServiceImpl reservationServiceImpl,MovieServiceImpl movieServiceImpl) {
@@ -55,10 +56,10 @@ public class ReservationController {
 		reservationService.deleteReservation(id);
 	}
 	
-	/*@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void updateReservation(@PathVariable long id, @RequestBody ReservationEntity updateReservation) {
-		movieService.updateReservation(id, updateReservation);
-	}*/
+		reservationService.updateReservation(id, updateReservation);
+	}
 	
 	
 	@GetMapping(path="/{id}",produces=MediaType.APPLICATION_JSON_VALUE)

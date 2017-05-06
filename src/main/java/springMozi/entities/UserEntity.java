@@ -1,9 +1,11 @@
 package springMozi.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserEntity {
@@ -12,12 +14,22 @@ public class UserEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
-	private String userName;
+	@NotNull
+	@Column(unique=true)
+	private String username;
+	@NotNull
+	@Column(unique=true)
 	private String password;
 	
+	@NotNull
 	private String firstName;
+	@NotNull
 	private String lastName;
+	@NotNull
+	@Column(unique=true)
 	private String emailAddress;
+	@NotNull
+	@Column(unique=true)
 	private String phoneNumber;
 	
 	public long getId() {
@@ -38,11 +50,11 @@ public class UserEntity {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String userName) {
+		this.username = userName;
 	}
 	public String getPassword() {
 		return password;

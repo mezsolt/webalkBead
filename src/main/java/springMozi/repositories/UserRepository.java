@@ -9,6 +9,9 @@ import springMozi.entities.UserEntity;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
-	List<UserEntity> findByUserName(String userName);
-	List<UserEntity> findByEmailAddress(String emailAddress);
+	UserEntity findOneByUsername(String username);
+	UserEntity findOneByEmailAddress(String emailAddress);
+	List<UserEntity> findByFirstName(String firstName);
+	List<UserEntity> findByLastName(String lastName);
+	List<UserEntity> findByPhoneNumber(String phoneNumber);
 }

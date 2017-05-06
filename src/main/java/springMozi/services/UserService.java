@@ -14,8 +14,12 @@ public interface UserService {
 	void deleteUser(long id);
 	UserEntity findUser(long id);
 	void updateUser(long id,UserEntity updatedUser);
-	UserEntity showOne(long id);
-	List<UserEntity> findByUserName(String userName);
-	List<UserEntity> findByEmailAddress(String emailAddress);
+	
+	//crudrepository
+	UserEntity findOneByUsername(String username);
+	UserEntity findOneByEmailAddress(String emailAddress);
+	List<UserEntity> findByFirstName(String firstName);
+	List<UserEntity> findByLastName(String lastName);
+	List<UserEntity> findByPhoneNumber(String phoneNumber);
 	
 }

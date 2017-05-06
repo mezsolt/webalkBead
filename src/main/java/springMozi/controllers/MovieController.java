@@ -22,21 +22,27 @@ import org.springframework.web.bind.annotation.RestController;
 import springMozi.dao.MovieDAO;
 import springMozi.entities.CinemaDateAndSeats;
 import springMozi.entities.MovieEntity;
+import springMozi.entities.ReservationEntity;
 import springMozi.entities.UserEntity;
 import springMozi.serviceImpls.MovieServiceImpl;
+import springMozi.serviceImpls.ReservationServiceImpl;
 import springMozi.serviceImpls.UserServiceImpl;
 import springMozi.services.MovieService;
+import springMozi.services.ReservationService;
 
 @RestController
 @RequestMapping("/movie")
 public class MovieController {
 
-	MovieService movieService;
+	private MovieService movieService;
+	private ReservationService reservationService;
+	
 	MovieDAO movieDao;
 	
 	@Autowired
-	public MovieController(MovieServiceImpl movieServiceImpl,MovieDAO movieDao) {
+	public MovieController(MovieServiceImpl movieServiceImpl,ReservationServiceImpl reservationServiceImpl,MovieDAO movieDao) {
 		this.movieService = movieServiceImpl;
+		this.reservationService = reservationServiceImpl;	
 		this.movieDao = movieDao;
 	}
 		
@@ -50,22 +56,20 @@ public class MovieController {
 		movieService.saveMovie(newMovie);
 	}
 	
-	@PutMapping(path="/newshow/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
-	void newShow(@PathVariable long id, @RequestBody CinemaDateAndSeats newShow) {
-		movieService.newShow(id, newShow);
-	}
-	
-	
 	@DeleteMapping(path="/{id}")
 	void deleteMovie(@PathVariable long id) {
 		movieService.deleteMovie(id);
 	}
 	
-	/*@PostMapping(path="/{id}")
-	void addMovieDate(@PathVariable long id,@RequestParam("newDate")@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") ArrayList<Date> newDate) {
-		System.out.println(newDate.get(0).toString());
-		movieService.addNewMovieDate(id,newDate);
-	}*/
+	@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
+	void updateMovie(@PathVariable long id, @RequestBody MovieEntity updateMovie) {
+		movieService.updateMovie(id, updateMovie);
+	}
+	
+	@GetMapping(path="/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
+	MovieEntity showMovie(@PathVariable long id) {
+		return movieService.showOne(id);
+	}
 	
 	@GetMapping(path="/dao",produces=MediaType.APPLICATION_JSON_VALUE)
 	Iterable<MovieEntity> listMoviesAfterDate(@RequestParam("date")@DateTimeFormat(pattern = "yyyy-MM-dd")Date date) {
@@ -82,26 +86,37 @@ public class MovieController {
 		return movieService.getMovieByGenres(movieGenre);
 	}
 	
-	@GetMapping(path="/seats",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/rep/cinema",produces=MediaType.APPLICATION_JSON_VALUE)
+	Iterable<MovieEntity> findByMovieCinemaIn(@RequestParam ArrayList<String> movieCinemas) {
+		return movieService.getMovieByCinemas(movieCinemas);
+	}
+	
+	//show todo updateshow
+	@PutMapping(path="/newshow/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
+	void newShow(@PathVariable long id, @RequestBody CinemaDateAndSeats newShow) {
+		movieService.newShow(id, newShow);
+	}	
+	
+	@DeleteMapping(path="/show/{id}")
+	void deleteShow(@PathVariable long id) {
+		for(ReservationEntity e : reservationService.listAllReservations()) {
+			if(e.getShowId()==id) {
+				reservationService.deleteReservation(e.getId());
+			}
+		}
+		movieService.deleteShow(id);
+	}
+	
+		
+	//seats
+	@GetMapping(path="/seatsall",produces=MediaType.APPLICATION_JSON_VALUE)
 	int[][] getSeats(@RequestParam long showId) {		
 		return movieService.getCinemaDateAndSeatsById(showId).getSeats();
 	}
 	
-	/*@PutMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
-	void updateMovie(@PathVariable long id, @RequestBody MovieEntity updateMovie) {
-		movieService.updateMovie(id, updateMovie);
-	}*/
-	
-	
-	@GetMapping(path="/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	MovieEntity showMovie(@PathVariable long id) {
-		return movieService.showOne(id);
+
+	@GetMapping(path="/seatsspecific")
+	@ResponseBody int showSeatsAt(@RequestParam long showId,@RequestParam int x,@RequestParam int y) {
+		return movieService.getCinemaDateAndSeatsById(showId).getSeatAt(x, y);		
 	}
-	
-	/*@GetMapping(path="/seats")
-	@ResponseBody int showSeats(@RequestParam long id,@RequestParam int x,@RequestParam int y) {
-		return movieService.showSeats(id, x, y);
-		
-	}*/
-	//second commit
 }

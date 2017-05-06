@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,18 +28,22 @@ public class CinemaDateAndSeats implements Serializable{
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private String cinemaName;
 	
 	@Column(length=10000)
 	@Lob
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
+	@NotNull
 	private Date showDate;
 	
 	@Column(length=10000)
+	@NotNull
 	private int showRoom;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private String showDimension;
 		
 	@Column(length=10000)
@@ -110,4 +115,15 @@ public class CinemaDateAndSeats implements Serializable{
 		this.showDimension = showDimension;
 	}
 		
+	public void setSeatsToOne() {
+		for(int i=0;i<5;i++){
+ 			for(int j=0;j<10;j++){
+ 				getSeats()[i][j] = 1;
+ 			}
+ 		}	
+	}
+	
+	public int getSeatAt(int x,int y) {
+		return getSeats()[x][y];
+	}
 }

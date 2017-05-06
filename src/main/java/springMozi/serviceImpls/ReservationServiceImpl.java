@@ -65,4 +65,9 @@ public class ReservationServiceImpl implements ReservationService{
 		return reservationRepository.findByMovieName(movieName);
 	}
 
+	@Override
+	public List<ReservationEntity> findByShowId(long showId) {
+		return reservationRepository.findByShowId(showId);
+	}
+
 }

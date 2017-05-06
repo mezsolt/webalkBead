@@ -11,6 +11,7 @@ import springMozi.entities.UserEntity;
 @Repository
 public interface ReservationRepository extends CrudRepository<ReservationEntity,Long>{
 	List<ReservationEntity> findByUserId(long userId);
+	List<ReservationEntity> findByShowId(long showId);
 	List<ReservationEntity> findByMovieName(String movieName);
 	List<ReservationEntity> findByCinemaName(String cinemaName);
 }

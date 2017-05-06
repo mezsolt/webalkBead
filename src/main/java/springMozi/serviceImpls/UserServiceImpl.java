@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 			
 	public void updateUser(long id,UserEntity updatedUser) {	
-		userRepository.findOne(id).setUserName(updatedUser.getUserName());
+		userRepository.findOne(id).setUsername(updatedUser.getUsername());
 		userRepository.findOne(id).setPassword(updatedUser.getPassword());
 		userRepository.findOne(id).setFirstName(updatedUser.getFirstName());
 		userRepository.findOne(id).setLastName(updatedUser.getLastName());
@@ -48,18 +48,28 @@ public class UserServiceImpl implements UserService {
 		
 		userRepository.save(userRepository.findOne(id));	
 	}
+	
+	public UserEntity findOneByUsername(String username) {
+		return userRepository.findOneByUsername(username);
+	}
+	
+	public UserEntity findOneByEmailAddress(String emailAddress) {
+		return userRepository.findOneByEmailAddress(emailAddress);
+	}
 
 	@Override
-	public UserEntity showOne(long id) {
-		return userRepository.findOne(id);
+	public List<UserEntity> findByFirstName(String firstName) {
+		return userRepository.findByFirstName(firstName);
 	}
-	
-	public List<UserEntity> findByUserName(String userName) {
-		return userRepository.findByUserName(userName);
+
+	@Override
+	public List<UserEntity> findByLastName(String lastName) {
+		return userRepository.findByLastName(lastName);
 	}
-	
-	public List<UserEntity> findByEmailAddress(String emailAddress) {
-		return userRepository.findByEmailAddress(emailAddress);
+
+	@Override
+	public List<UserEntity> findByPhoneNumber(String phoneNumber) {
+		return userRepository.findByPhoneNumber(phoneNumber);
 	}
 	
 }

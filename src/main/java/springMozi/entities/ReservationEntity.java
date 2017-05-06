@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -19,18 +20,27 @@ public class ReservationEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
+	@NotNull
 	private long userId;
+	@NotNull
 	private long showId;
 	
+	@NotNull
 	private String movieName;
+	@NotNull
 	private String cinemaName;
+	@NotNull
 	private int showRoom;
+	@NotNull
 	private String showDimension;
 	
 	@Column(length=10000)
 	@Lob
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
+	@NotNull
 	private Date showDate;
+	
+	@NotNull
 	private int seats[][];	
 	
 	public long getId() {

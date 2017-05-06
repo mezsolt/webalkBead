@@ -47,11 +47,7 @@ public class MovieServiceImpl implements MovieService{
 
 	@Override
 	public void newShow(long id,CinemaDateAndSeats newShow) {
-		for(int i=0;i<5;i++){
- 			for(int j=0;j<10;j++){
- 				newShow.getSeats()[i][j] = 1;
- 			}
- 		}	
+		newShow.setSeatsToOne();
 		movieRepository.findOne(id).getDateAndSeats().add(newShow);
 		movieRepository.save(movieRepository.findOne(id));	
 	}
@@ -74,13 +70,6 @@ public class MovieServiceImpl implements MovieService{
 
 	@Override
 	public int[][] showSeats(long showId) {
-		/*int[][] returnTomb = null;
-		for(int i=0;i<movieRepository.findOne(movieId).getDateAndSeats().size();i++) {
-			if(movieRepository.findOne(movieId).getDateAndSeats().get(i).getId()==showId){
-				returnTomb = movieRepository.findOne(movieId).getDateAndSeats().get(i).getSeats();
-			}
-		}
-		return returnTomb;*/
 		return getCinemaDateAndSeatsById(showId).getSeats();
 	}
 	
@@ -122,15 +111,25 @@ public class MovieServiceImpl implements MovieService{
 
 		return moviesByGenre;
 	}
+	
+	@Override
+	public List<MovieEntity> getMovieByCinemas(ArrayList<String> cinema) {
+		List<MovieEntity> movieList =  movieDao.getAllMovie();
+		List<MovieEntity> moviesByCinema = new ArrayList<MovieEntity>();
+
+		for(int i=0;i<movieList.size();i++) {
+			if(movieList.get(i).getAvailableCinemas().containsAll(cinema)){
+				moviesByCinema.add(movieList.get(i));
+			}		
+		}
+
+		return moviesByCinema;
+	}
+	
 
 	@Override
 	public CinemaDateAndSeats getCinemaDateAndSeatsById(long showId) {
 		CinemaDateAndSeats dateAndSeats = null;
-		/*for(int i=0;i<movieRepository.findOne(movieId).getDateAndSeats().size();i++) {
-			if(movieRepository.findOne(movieId).getDateAndSeats().get(i).getId()==showId){
-				dateAndSeats = movieRepository.findOne(movieId).getDateAndSeats().get(i);
-			}
-		}*/
 		for(MovieEntity me : movieRepository.findAll()) {
 			for(int i=0;i<me.getDateAndSeats().size();i++) {
 				if(me.getDateAndSeats().get(i).getId()==showId){
@@ -141,10 +140,11 @@ public class MovieServiceImpl implements MovieService{
 		return dateAndSeats;
 	}
 
+	@Override
+	public void deleteShow(long showId) {
+		getCinemaDateAndSeatsById(showId).getMovieEntity().getDateAndSeats().remove(getCinemaDateAndSeatsById(showId));
+		
+	}
 
-	/*@Override
-	public int[][] getShowSeats(long movieId,int showId) {
-		return movieRepository.findOne(movieId).getDateAndSeats().get(showId).getSeats();
-	}*/
 
 }

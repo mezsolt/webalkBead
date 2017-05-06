@@ -16,14 +16,17 @@ public interface MovieService {
 	void saveMovie(MovieEntity newMovie);
 	void deleteMovie(long id);
 	void updateMovie(long id,MovieEntity updateEntity);
-	void updateShow(long movieId,int showId,CinemaDateAndSeats updateShow);
 	MovieEntity showOne(long id);
-	void newShow(long id,CinemaDateAndSeats newShow);
 	List<MovieEntity> getMovieByGenres(ArrayList<String> genre);
-	CinemaDateAndSeats getCinemaDateAndSeatsById(long showId);
+	List<MovieEntity> getMovieByCinemas(ArrayList<String> cinema);
+	
 	void setSeats(long showId, int[][] seats, int newValue);
 	int[][] showSeats(long showId);
-	//int[][] getShowSeats(long movieId,int showId);
+	
+	void deleteShow(long showId);
+	void updateShow(long movieId,int showId,CinemaDateAndSeats updateShow);
+	void newShow(long id,CinemaDateAndSeats newShow);
+	CinemaDateAndSeats getCinemaDateAndSeatsById(long showId);
 	
 	//dao
 	List<MovieEntity> findMovieAfterDate(Date date);

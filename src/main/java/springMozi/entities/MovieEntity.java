@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -25,45 +26,52 @@ public class MovieEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
-	@Column(length=10000)
+	@Column(length=10000,unique=true)
 	@Lob
+	@NotNull
 	private String movieName;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private ArrayList<String> availableCinemas;
 	
 	@Column(length=10000)
+	@NotNull
 	private int movieDuration;
 	
 	@JsonFormat(pattern="yyyy-MM-dd", timezone = "Europe/Budapest")
+	@NotNull
 	private Date movieStartDate;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private String movieDescription;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private String movieDirector;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private String movieCast;
 	
 	@Column(length=10000)
 	@Lob
+	@NotNull
 	private ArrayList<String> movieDimension;
 	
 	@Column(length=10000)
+	@NotNull
 	private int movieAgeRestriction;
 	
 	@Column(length=10000)
 	@Lob
-	private ArrayList<String> movieGenre;
-	
-	/*@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
-	private ArrayList<Date> movieDate;*/		
+	@NotNull
+	private ArrayList<String> movieGenre;		
 		
 	@Column(length=10000)
 	@Lob
