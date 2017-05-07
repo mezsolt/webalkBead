@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import springMozi.entities.ReservationEntity;
 import springMozi.repositories.ReservationRepository;
+import springMozi.services.MovieService;
 import springMozi.services.ReservationService;
 
 @Service
@@ -73,21 +74,26 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 
 	@Override
-	public void deleteReservationByUserId(long userId) {
+	public void deleteReservationByUserId(long userId,MovieService movieService) {
 		for(ReservationEntity e : reservationRepository.findAll()) {
 			if(e.getUserId() == userId) {
+				movieService.getShowById(e.getShowId()).setSeats(e.getSeats(), 1);
+				movieService.saveMovie(movieService.showOne(movieService.getShowById(e.getShowId()).getMovieEntity().getId()));
 				reservationRepository.delete(e.getId());
 			}
 		}	
 	}
 
 	@Override
-	public void deleteReservationByShowId(long showId) {
+	public void deleteReservationByShowId(long showId,MovieService movieService) {
 		for(ReservationEntity e : reservationRepository.findAll()) {
 			if(e.getShowId() == showId) {
+				movieService.getShowById(e.getShowId()).setSeats(e.getSeats(), 1);
+				movieService.saveMovie(movieService.showOne(movieService.getShowById(e.getShowId()).getMovieEntity().getId()));
 				reservationRepository.delete(e.getId());
 			}
 		}	
 	}
+
 	
 }

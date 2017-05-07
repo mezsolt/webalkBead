@@ -29,7 +29,7 @@ public class MovieDAO {
 	public List<MovieEntity> getMovieAfterDate(Date date) {
 		Criteria cr = sessionFactory.getCurrentSession().createCriteria(MovieEntity.class);
 		
-		cr.add(Restrictions.ge("movieStartDate",date));
+		cr.add(Restrictions.ge("movieReleaseDate",date));
 		
 		return cr.list();
 	}

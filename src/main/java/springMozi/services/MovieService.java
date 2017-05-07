@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import springMozi.entities.CinemaDateAndSeats;
+import springMozi.entities.ShowEntity;
 import springMozi.entities.MovieEntity;
 import springMozi.entities.ReservationEntity;
 
@@ -22,15 +22,15 @@ public interface MovieService {
 	List<MovieEntity> getMovieByCinemas(ArrayList<String> cinema);
 	boolean checkForMovieName(String movieName);
 	boolean checkForShowId(long id);
-	void deleteReservationsByMovieId(long movieId, ReservationService reservationService);
+	void deleteReservationsByMovieId(long movieId, ReservationService reservationService,MovieService movieService);
 	
 	void setSeats(long showId, int[][] seats, int newValue);
 	int[][] showSeats(long showId);
 	
 	void deleteShow(long showId);
-	void updateShow(long showId,CinemaDateAndSeats updateShow);
-	void newShow(long id,CinemaDateAndSeats newShow);
-	CinemaDateAndSeats getCinemaDateAndSeatsById(long showId);
+	void updateShow(long showId,ShowEntity updateShow);
+	void newShow(long id,ShowEntity newShow);
+	ShowEntity getShowById(long showId);
 	
 	//dao
 	List<MovieEntity> findMovieAfterDate(Date date);

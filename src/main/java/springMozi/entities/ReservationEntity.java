@@ -21,22 +21,27 @@ public class ReservationEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
+	@Column(length=10000)
 	@NotNull
 	private long userId;
+	@Column(length=10000)
 	@NotNull
 	private long showId;
 	
+	@Column(length=10000)
 	@NotNull
 	private String movieName;
+	@Column(length=10000)
 	@NotNull
 	private String cinemaName;
+	@Column(length=10000)
 	@NotNull
 	private int showRoom;
+	@Column(length=10000)
 	@NotNull
 	private String showDimension;
 	
 	@Column(length=10000)
-	@Lob
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
 	@NotNull
 	private Date showDate;
@@ -45,6 +50,7 @@ public class ReservationEntity {
 	@NotNull
 	private int price;
 	
+	@Column(length=10000)
 	@NotNull
 	private int seats[][];	
 	

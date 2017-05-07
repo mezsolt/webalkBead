@@ -14,8 +14,8 @@ public interface ReservationService {
 	void deleteReservation(long id);
 	ReservationEntity findReservation(long id);
 	void updateReservation(long id,ReservationEntity updatedReservation,int price);
-	void deleteReservationByUserId(long userId);
-	void deleteReservationByShowId(long showId);
+	void deleteReservationByUserId(long userId,MovieService movieService);
+	void deleteReservationByShowId(long showId,MovieService movieService);
 	
 	//crudrepository
 	List<ReservationEntity> findByUserId(long userId);

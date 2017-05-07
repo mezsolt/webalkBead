@@ -27,12 +27,10 @@ public class MovieEntity {
 	private long id;
 	
 	@Column(length=10000,unique=true)
-	@Lob
 	@NotNull
 	private String movieName;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private ArrayList<String> availableCinemas;
 	
@@ -40,27 +38,24 @@ public class MovieEntity {
 	@NotNull
 	private int movieDuration;
 	
+	@Column(length=10000)
 	@JsonFormat(pattern="yyyy-MM-dd", timezone = "Europe/Budapest")
 	@NotNull
-	private Date movieStartDate;
+	private Date movieReleaseDate;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private String movieDescription;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private String movieDirector;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private String movieCast;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private ArrayList<String> movieDimension;
 	
@@ -69,19 +64,17 @@ public class MovieEntity {
 	private int movieAgeRestriction;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private ArrayList<String> movieGenre;		
 		
 	@Column(length=10000)
-	@Lob
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JoinColumn(name = "MOVIE_ENTITY_ID")
-	private List<CinemaDateAndSeats> dateAndSeats;
+	private List<ShowEntity> shows;
 	
 	
-	public List<CinemaDateAndSeats> getDateAndSeats() {
-		return dateAndSeats;
+	public List<ShowEntity> getShows() {
+		return shows;
 	}
 		
 	public ArrayList<String> getMovieDimension() {
@@ -116,12 +109,12 @@ public class MovieEntity {
 		this.movieAgeRestriction = movieAgeRestriction;
 	}
 
-	public Date getMovieStartDate() {
-		return movieStartDate;
+	public Date getMovieReleaseDate() {
+		return movieReleaseDate;
 	}
 
-	public void setMovieStartDate(Date movieStartDate) {
-		this.movieStartDate = movieStartDate;
+	public void setMovieReleaseDate(Date movieReleaseDate) {
+		this.movieReleaseDate = movieReleaseDate;
 	}
 
 	public String getMovieDescription() {

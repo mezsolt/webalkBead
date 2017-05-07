@@ -22,8 +22,10 @@ import springMozi.entities.UserEntity;
 import springMozi.exceptions.BadRoleException;
 import springMozi.exceptions.BadUserNameException;
 import springMozi.exceptions.UsernameOrEmailAlreadyExistException;
+import springMozi.serviceImpls.MovieServiceImpl;
 import springMozi.serviceImpls.ReservationServiceImpl;
 import springMozi.serviceImpls.UserServiceImpl;
+import springMozi.services.MovieService;
 import springMozi.services.ReservationService;
 import springMozi.services.UserService;
 
@@ -33,18 +35,23 @@ public class UserController {
 	
 	private UserService userService;
 	private ReservationService reservationService;
+	private MovieService movieService;
 
 	@Autowired
-	public UserController(UserServiceImpl userServiceImpl,ReservationServiceImpl reservationServiceImpl) {
+	public UserController(UserServiceImpl userServiceImpl,ReservationServiceImpl reservationServiceImpl,MovieServiceImpl movieServiceImpl) {
 		this.userService = userServiceImpl;
 		this.reservationService = reservationServiceImpl;
+		this.movieService = movieServiceImpl;
 	}
 	
+	
+	//listazas todo id alapjan
 	@GetMapping(path="",produces=MediaType.APPLICATION_JSON_VALUE)
 	Iterable<UserEntity> listUsers() {
 		return userService.listAllUser();	
 	}
 	
+	//uj user
 	@PostMapping(path="",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void newUser(@RequestBody UserEntity newUser) {
 		if(newUser.getFirstName().toUpperCase().equals("ADMIN")) {
@@ -60,9 +67,11 @@ public class UserController {
 		userService.newUser(newUser);
 	}
 	
+	
+	//update user
 	@PutMapping(path="/{id}",consumes=MediaType.APPLICATION_JSON_VALUE)
 	void updateExisting(@PathVariable long id,@RequestBody UserEntity updateUser) {
-		if(updateUser.getFirstName().toUpperCase().equals("ADMIN")) {
+		if(updateUser.getUsername().toUpperCase().equals("ADMIN")) {
 			throw new BadUserNameException();
 		}
 		if(userService.checkForUsernameAndEmail(updateUser.getUsername(), updateUser.getEmailAddress())) {
@@ -74,12 +83,17 @@ public class UserController {
 		userService.updateUser(id,updateUser);
 	}
 	
+	
+	//delete user
 	@DeleteMapping(path="/{id}")
-	void deleteUser(@PathVariable long userId) {
-		reservationService.deleteReservationByUserId(userId);
-		userService.deleteUser(userId);
+	void deleteUser(@PathVariable long id) {
+		reservationService.deleteReservationByUserId(id,movieService);
+		userService.deleteUser(id);
 	}
 	
+	
+	
+	//lekerdezesek adattagok alapjan
 	@GetMapping(path="/username",produces=MediaType.APPLICATION_JSON_VALUE)
 	UserEntity findByUsername(@RequestParam String username) {
 		return userService.findOneByUsername(username);

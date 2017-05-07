@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
 		userRepository.findOne(id).setLastName(updatedUser.getLastName());
 		userRepository.findOne(id).setEmailAddress(updatedUser.getEmailAddress());
 		userRepository.findOne(id).setPhoneNumber(updatedUser.getPhoneNumber());
+		userRepository.findOne(id).setRoles(updatedUser.getRoles());
 		
 		userRepository.save(userRepository.findOne(id));	
 	}

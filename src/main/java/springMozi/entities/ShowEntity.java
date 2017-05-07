@@ -20,19 +20,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
-public class CinemaDateAndSeats implements Serializable{
+public class ShowEntity implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private String cinemaName;
 	
 	@Column(length=10000)
-	@Lob
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm", timezone = "Europe/Budapest")
 	@NotNull
 	private Date showDate;
@@ -42,12 +40,10 @@ public class CinemaDateAndSeats implements Serializable{
 	private int showRoom;
 	
 	@Column(length=10000)
-	@Lob
 	@NotNull
 	private String showDimension;
 		
 	@Column(length=10000)
-	@Lob
 	@JsonIgnore
 	private int[][] seats = new int[5][10];
 	
@@ -60,7 +56,7 @@ public class CinemaDateAndSeats implements Serializable{
 	@JoinColumn(name = "movie_Entity_id")
 	private MovieEntity movieEntity;
 		
-	public CinemaDateAndSeats() {
+	public ShowEntity() {
 	}
  	
 	public long getId() {
@@ -137,8 +133,8 @@ public class CinemaDateAndSeats implements Serializable{
  		}	
 	}
 	
-	public int getSeatAt(int x,int y) {
-		return getSeats()[x][y];
+	public int getSeatAt(int row,int column) {
+		return getSeats()[row][column];
 	}
 	
 	public ArrayList<String> checkIfSeatIsTaken(int[][] reservationSeats) {

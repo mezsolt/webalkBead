@@ -17,20 +17,26 @@ public class UserEntity {
 	private long id;
 	
 	@NotNull
-	@Column(unique=true)
+	@Column(length=10000,unique=true)
 	private String username;
+	@Column(length=10000)
 	@NotNull
 	private String password;
 	
+	@Column(length=10000)
 	@NotNull
 	private String firstName;
+	@Column(length=10000)
 	@NotNull
 	private String lastName;
+	
 	@NotNull
-	@Column(unique=true)
+	@Column(length=10000,unique=true)
 	private String emailAddress;
+	@Column(length=10000)
 	@NotNull
 	private String phoneNumber;
+	@Column(length=10000)
 	@NotNull
 	private ArrayList<String> roles;
 	

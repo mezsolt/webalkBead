@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import springMozi.dao.MovieDAO;
-import springMozi.entities.CinemaDateAndSeats;
+import springMozi.entities.ShowEntity;
 import springMozi.entities.MovieEntity;
 import springMozi.entities.ReservationEntity;
 import springMozi.entities.UserEntity;
@@ -49,9 +49,9 @@ public class MovieServiceImpl implements MovieService{
 	}
 
 	@Override
-	public void newShow(long id,CinemaDateAndSeats newShow) {
+	public void newShow(long id,ShowEntity newShow) {
 		newShow.setSeatsToOne();
-		movieRepository.findOne(id).getDateAndSeats().add(newShow);
+		movieRepository.findOne(id).getShows().add(newShow);
 		movieRepository.save(movieRepository.findOne(id));	
 	}
 
@@ -60,7 +60,7 @@ public class MovieServiceImpl implements MovieService{
 		movieRepository.findOne(id).setMovieName(updateEntity.getMovieName());
 		movieRepository.findOne(id).setAvailableCinemas(updateEntity.getAvailableCinemas());
 		movieRepository.findOne(id).setMovieDuration(updateEntity.getMovieDuration());
-		movieRepository.findOne(id).setMovieStartDate(updateEntity.getMovieStartDate());
+		movieRepository.findOne(id).setMovieReleaseDate(updateEntity.getMovieReleaseDate());
 		movieRepository.findOne(id).setMovieDescription(updateEntity.getMovieDescription());
 		movieRepository.findOne(id).setMovieDirector(updateEntity.getMovieDirector());
 		movieRepository.findOne(id).setMovieCast(updateEntity.getMovieCast());
@@ -73,22 +73,24 @@ public class MovieServiceImpl implements MovieService{
 
 	@Override
 	public int[][] showSeats(long showId) {
-		return getCinemaDateAndSeatsById(showId).getSeats();
+		return getShowById(showId).getSeats();
 	}
 	
 	@Override
-	public void updateShow(long showId, CinemaDateAndSeats updateShow) {		
-		getCinemaDateAndSeatsById(showId).setCinemaName(updateShow.getCinemaName());
-		getCinemaDateAndSeatsById(showId).setShowDate(updateShow.getShowDate());
-		getCinemaDateAndSeatsById(showId).setShowRoom(updateShow.getShowRoom());
-		getCinemaDateAndSeatsById(showId).setShowDimension(updateShow.getShowDimension());
+	public void updateShow(long showId, ShowEntity updateShow) {		
+		getShowById(showId).setCinemaName(updateShow.getCinemaName());
+		getShowById(showId).setShowDate(updateShow.getShowDate());
+		getShowById(showId).setShowRoom(updateShow.getShowRoom());
+		getShowById(showId).setShowDimension(updateShow.getShowDimension());
+		getShowById(showId).setTicketPrice(updateShow.getTicketPrice());
 		
-		movieRepository.save(movieRepository.findOne(getCinemaDateAndSeatsById(showId).getMovieEntity().getId()));
+		getShowById(showId).setSeatsToOne();
+		movieRepository.save(movieRepository.findOne(getShowById(showId).getMovieEntity().getId()));
 	}
 
 	@Override
 	public void setSeats(long showId,int[][] seats, int newValue) {
-		getCinemaDateAndSeatsById(showId).setSeats(seats,newValue);
+		getShowById(showId).setSeats(seats,newValue);
 	}
 		
 	public List<MovieEntity> findMovieAfterDate(Date date) {
@@ -131,22 +133,28 @@ public class MovieServiceImpl implements MovieService{
 	
 
 	@Override
-	public CinemaDateAndSeats getCinemaDateAndSeatsById(long showId) {
-		CinemaDateAndSeats dateAndSeats = null;
+	public ShowEntity getShowById(long showId) {
+		ShowEntity show = null;
 		for(MovieEntity me : movieRepository.findAll()) {
-			for(int i=0;i<me.getDateAndSeats().size();i++) {
-				if(me.getDateAndSeats().get(i).getId()==showId){
-					dateAndSeats = me.getDateAndSeats().get(i);
+			for(int i=0;i<me.getShows().size();i++) {
+				if(me.getShows().get(i).getId()==showId){
+					show = me.getShows().get(i);
 				}
 			}
 		}
-		return dateAndSeats;
+		return show;
 	}
 
 	@Override
-	public void deleteShow(long showId) {
-		getCinemaDateAndSeatsById(showId).getMovieEntity().getDateAndSeats().remove(getCinemaDateAndSeatsById(showId));
-		
+	public void deleteShow(long showId) {		
+		for(MovieEntity me : movieRepository.findAll()) {
+			for(int i=0;i<me.getShows().size();i++) {
+				if(me.getShows().get(i).getId()==showId){
+					me.getShows().remove(i);
+					movieRepository.save(me);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -164,8 +172,8 @@ public class MovieServiceImpl implements MovieService{
 	public boolean checkForShowId(long id) {
 		boolean exists = false;
 		for(MovieEntity me : movieRepository.findAll()) {
-			for(int i=0;i<me.getDateAndSeats().size();i++) {
-				if(me.getDateAndSeats().get(i).getId()==id){
+			for(int i=0;i<me.getShows().size();i++) {
+				if(me.getShows().get(i).getId()==id){
 					exists = true;
 				}
 			}
@@ -174,12 +182,12 @@ public class MovieServiceImpl implements MovieService{
 	}
 
 	@Override
-	public void deleteReservationsByMovieId(long movieId, ReservationService reservationService) {
+	public void deleteReservationsByMovieId(long movieId, ReservationService reservationService,MovieService movieService) {
 	
-		for(CinemaDateAndSeats a : showOne(movieId).getDateAndSeats()) {
+		for(ShowEntity a : showOne(movieId).getShows()) {
 			for(ReservationEntity r : reservationService.listAllReservations()) {
 				if(a.getId()==r.getShowId()) {
-					reservationService.deleteReservationByShowId(a.getId());
+					reservationService.deleteReservationByShowId(a.getId(),movieService);				
 				}
 			}
 		}
