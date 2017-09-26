@@ -45,7 +45,7 @@ public class UserController {
 	}
 	
 	
-	//listazas todo id alapjan
+	//listazas todo id alapjan///
 	@GetMapping(path="",produces=MediaType.APPLICATION_JSON_VALUE)
 	Iterable<UserEntity> listUsers() {
 		return userService.listAllUser();	
