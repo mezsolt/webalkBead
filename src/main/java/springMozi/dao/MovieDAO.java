@@ -16,7 +16,7 @@ import springMozi.entities.MovieEntity;
 
 @Repository
 public class MovieDAO {
-
+	//new branch
 	private SessionFactory sessionFactory;
 
 	@Autowired
